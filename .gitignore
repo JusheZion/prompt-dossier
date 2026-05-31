@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.env.local
+node_modules/
+output/
+dist/
+tsconfig.tsbuildinfo
+supabase/.temp/

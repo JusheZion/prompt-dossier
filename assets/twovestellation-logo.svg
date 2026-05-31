@@ -1,0 +1,35 @@
+<svg width="1400" height="420" viewBox="0 0 1400 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Twovestellation logo</title>
+  <desc id="desc">Logo concept for Twovestellation, a production and wellness consulting firm.</desc>
+
+  <rect width="1400" height="420" rx="0" fill="#F8F4EA"/>
+
+  <g transform="translate(110 78)">
+    <circle cx="132" cy="132" r="119" stroke="#18212A" stroke-width="3.5"/>
+    <circle cx="132" cy="132" r="91" stroke="#C49A43" stroke-width="2.5" stroke-dasharray="2 12" stroke-linecap="round"/>
+
+    <path d="M71 91L132 55L193 91L170 163L132 211L94 163L71 91Z" stroke="#18212A" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M94 163L132 55L170 163" stroke="#C49A43" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M71 91L132 211L193 91" stroke="#5E8B7E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <circle cx="132" cy="55" r="11" fill="#18212A"/>
+    <circle cx="71" cy="91" r="9" fill="#C49A43"/>
+    <circle cx="193" cy="91" r="9" fill="#C49A43"/>
+    <circle cx="94" cy="163" r="8" fill="#5E8B7E"/>
+    <circle cx="170" cy="163" r="8" fill="#5E8B7E"/>
+    <circle cx="132" cy="211" r="11" fill="#18212A"/>
+
+    <path d="M132 26L138.7 44.3L158 51L138.7 57.7L132 76L125.3 57.7L106 51L125.3 44.3L132 26Z" fill="#C49A43"/>
+    <path d="M227 132L239 136.4L251 132L246.6 144L251 156L239 151.6L227 156L231.4 144L227 132Z" fill="#5E8B7E"/>
+  </g>
+
+  <g transform="translate(430 123)">
+    <text x="0" y="83" fill="#18212A" font-family="Avenir Next, Inter, Helvetica, Arial, sans-serif" font-size="74" font-weight="600" letter-spacing="1.2">
+      Twovestellation
+    </text>
+    <path d="M5 119H691" stroke="#C49A43" stroke-width="3" stroke-linecap="round"/>
+    <text x="2" y="168" fill="#5E8B7E" font-family="Avenir Next, Inter, Helvetica, Arial, sans-serif" font-size="25" font-weight="500" letter-spacing="4.2">
+      PRODUCTION AND WELLNESS CONSULTING
+    </text>
+  </g>
+</svg>
