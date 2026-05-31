@@ -317,3 +317,59 @@
 ### Next steps
 - Verify authenticated create/edit/favorite/delete on the live site.
 - Fix or work around the local Vitest worker startup issue.
+
+## ARCS-style Cloudflare deployment setup - 2026-05-31
+
+### What changed
+- Compared the working ARCS deployment setup against Prompt Library and moved Prompt Library to the same core Cloudflare Workers static-assets pattern.
+- Added `wrangler.jsonc` with `assets.directory: dist` and `assets.not_found_handling: single-page-application`, matching the ARCS SPA routing strategy.
+- Added ARCS-style scripts for local preview, production deploy, and Cloudflare Workers Builds version upload.
+- Added deployment documentation and a short ARCS handoff note for linking out to Prompt Library as a separate live app.
+
+### Files touched
+- `package.json`
+- `package-lock.json`
+- `vite.config.ts`
+- `wrangler.jsonc`
+- `docs/cloudflare-deployment.md`
+- `docs/arcs-prompt-library-handoff.md`
+- `docs/walkthrough.md`
+
+### Implementation notes
+- ARCS uses npm, `npm run build`, `dist`, `wrangler deploy --config ./wrangler.jsonc`, and `wrangler.jsonc` static assets with SPA fallback.
+- Prompt Library now uses the same deploy shape while remaining a separate app/project folder.
+- Prompt Library keeps only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as required Cloudflare build-time env vars; ARCS also needs `VITE_GEMINI_API_KEY`, but Prompt Library does not.
+- Prompt Library now declares Node `>=22.12.0` because the current Wrangler/Vite toolchain requires a modern Node runtime.
+- The Cloudflare Vite plugin from ARCS was not copied because Prompt Library has no Worker code path; the stable shared pattern is Wrangler static assets from `dist`.
+- No `_redirects` or `_headers` files are used; SPA fallback is handled by `wrangler.jsonc`.
+
+### Verification
+- `node -e "JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log('package.json OK')"` passed.
+- `npm run build` passed and produced `dist/index.html` plus bundled assets.
+- `npx wrangler --version` reported `4.95.0`.
+- `npx wrangler deploy --dry-run --config ./wrangler.jsonc` passed, read four files from `dist`, and found no bindings.
+- `npm run deploy` rebuilt successfully before reaching Cloudflare auth.
+
+### Outstanding issues
+- Cloudflare deployment is still blocked by local Wrangler auth. After sandbox/network access was allowed, Wrangler reported `Failed to fetch auth token: 400 Bad Request`, then required a non-interactive `CLOUDFLARE_API_TOKEN`.
+- `npm run login:cloudflare` opened the OAuth flow on `127.0.0.1:8976`, but timed out waiting for the authorization callback.
+- No Cloudflare live URL exists yet from this session. The existing fallback remains `https://jushezion.github.io/prompt-dossier/`.
+
+### Risks or caveats
+- Cloudflare build-time environment variables must be set before deployment so Vite can embed Supabase config.
+- If Cloudflare Workers Builds is used instead of local Wrangler deploy, the Build command must run before the Deploy/Version command so `dist` exists.
+
+### Operator follow-up
+- Complete a local Wrangler OAuth login and run `npm run deploy`, or connect the GitHub repo to Cloudflare Workers Builds with:
+  - Build command: `npm ci && npm run build`
+  - Deploy command: `npx wrangler deploy --config ./wrangler.jsonc`
+  - Version command: `npm run cf:versions-upload`
+  - Root directory: `/`
+  - Production branch: `main`
+- Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to the Cloudflare build environment.
+- Set `NODE_VERSION=22.12.0` in the Cloudflare build environment if the build image does not already use a compatible Node release.
+- After the Cloudflare URL exists, add it to Supabase Auth Site URL and Redirect URLs, then update `docs/arcs-prompt-library-handoff.md`.
+
+### Next steps
+- Deploy Prompt Library to Cloudflare once Cloudflare auth is available.
+- Verify the live Cloudflare URL loads and can reach Supabase after auth redirect settings are updated.
