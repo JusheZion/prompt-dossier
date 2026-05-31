@@ -281,3 +281,39 @@
 - Publish `dist` to `gh-pages`.
 - Enable GitHub Pages from the `gh-pages` branch.
 - Verify the live URL loads.
+
+## GitHub Pages live deployment - 2026-05-31
+
+### What changed
+- Published the Prompt Dossier app to GitHub Pages at `https://jushezion.github.io/prompt-dossier/`.
+- Pushed `main` to `https://github.com/JusheZion/prompt-dossier`.
+- Built the app with `VITE_BASE=/prompt-dossier/` and pushed the generated `dist` output to the `gh-pages` branch.
+- Enabled GitHub Pages with source branch `gh-pages` and path `/`.
+
+### Files touched
+- `docs/walkthrough.md`
+
+### Implementation notes
+- The first GitHub push attempt failed because the available GitHub OAuth token lacks the `workflow` scope needed to create workflow files. The final deployment avoided Actions and used a dedicated `gh-pages` branch instead.
+- The live Pages site is public and serves the static app from `/prompt-dossier/`.
+
+### Verification
+- `gh api repos/JusheZion/prompt-dossier/pages` reported `status: built`, `source.branch: gh-pages`, and `html_url: https://jushezion.github.io/prompt-dossier/`.
+- `curl -I https://jushezion.github.io/prompt-dossier/` returned `HTTP/2 200`.
+- Headless Playwright loaded the live URL and confirmed the `Prompt Dossier` heading, `New Prompt` button, and `Sign in required` storage state are visible.
+- Headless Playwright created a prompt on the live URL in demo-memory mode and confirmed the new prompt appeared in the library.
+
+### Outstanding issues
+- Authenticated Supabase persistence is still not verified on the live URL because no confirmed Supabase test user credentials are available in this environment.
+- Vitest remains blocked by worker startup timeouts in this environment.
+
+### Risks or caveats
+- Live unauthenticated saves are session-only demo-memory saves by design. Database persistence still requires signing in.
+
+### Operator follow-up
+- Provide confirmed Supabase test credentials and run `npm run check:supabase-persistence`.
+- Sign in on the live URL and create/edit a prompt to confirm database persistence through the deployed app.
+
+### Next steps
+- Verify authenticated create/edit/favorite/delete on the live site.
+- Fix or work around the local Vitest worker startup issue.
