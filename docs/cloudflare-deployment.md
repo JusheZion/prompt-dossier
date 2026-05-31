@@ -89,3 +89,18 @@ If Cloudflare is connected through Git-based Workers Builds, use:
 - OAuth retry result: `Timed out waiting for authorization code, please try again.`
 
 This is an authentication/session blocker, not a Prompt Library build or config blocker. The simplest Cloudflare path remains either a completed local Wrangler OAuth session followed by `npm run deploy`, or a Git-connected Cloudflare Workers Build using the settings above.
+
+## Cloudflare Build Failure: npm ci lock mismatch
+
+- Date: 2026-05-31
+- Cloudflare install command: `npm clean-install --progress=false`
+- Cloudflare toolchain: `npm@10.9.2`, `nodejs@22.16.0`
+- Exact failure: `npm ci can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync.`
+- Missing lockfile entries reported by Cloudflare:
+  - `@emnapi/runtime@1.10.0`
+  - `@emnapi/core@1.10.0`
+- Fix: regenerated `package-lock.json` with `npm@10.9.2` so Cloudflare's npm can resolve the same optional dependency entries.
+- Verification:
+  - `npx npm@10.9.2 ci --progress=false --no-audit --no-fund`
+  - `npm run build`
+  - `npx wrangler deploy --dry-run --config ./wrangler.jsonc`

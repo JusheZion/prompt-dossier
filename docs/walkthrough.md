@@ -373,3 +373,38 @@
 ### Next steps
 - Deploy Prompt Library to Cloudflare once Cloudflare auth is available.
 - Verify the live Cloudflare URL loads and can reach Supabase after auth redirect settings are updated.
+
+## Cloudflare npm lockfile repair - 2026-05-31
+
+### What changed
+- Investigated the first Cloudflare Git build failure for Prompt Library.
+- Repaired `package-lock.json` so Cloudflare's `npm@10.9.2` clean install can resolve the missing optional `@emnapi` packages required by the current Wrangler dependency graph.
+- Updated the deployment notes with the exact Cloudflare error and verification commands.
+
+### Files touched
+- `package-lock.json`
+- `docs/cloudflare-deployment.md`
+- `docs/walkthrough.md`
+
+### Implementation notes
+- Cloudflare detected `npm@10.9.2` and `nodejs@22.16.0`, then failed during `npm clean-install --progress=false`.
+- The exact missing lock entries were `@emnapi/runtime@1.10.0` and `@emnapi/core@1.10.0`.
+- Regenerating the lockfile with `npx npm@10.9.2 install --package-lock-only --no-audit --no-fund` added the missing package entries.
+
+### Verification
+- `npx npm@10.9.2 ci --progress=false --no-audit --no-fund` passed.
+- `npm run build` passed.
+- `npx wrangler deploy --dry-run --config ./wrangler.jsonc` passed.
+
+### Outstanding issues
+- Cloudflare needs a new deployment attempt from the pushed commit.
+- The live Cloudflare URL is still pending until the Cloudflare build/deploy succeeds.
+
+### Risks or caveats
+- Cloudflare may expose the next failure after install now that dependency installation is unblocked; inspect the next log if deployment still fails.
+
+### Operator follow-up
+- Retry the Cloudflare deployment from the latest `main` commit after this lockfile fix is pushed.
+
+### Next steps
+- If install passes but deploy fails, capture the next Cloudflare log and compare it against `docs/cloudflare-deployment.md`.
